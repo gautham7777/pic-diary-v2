@@ -1,33 +1,34 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
+import { 
+  initializeFirestore, 
+  persistentLocalCache,
+  persistentMultipleTabManager 
+} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
+// Load Firebase config from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyCVT2YuAJQoHE2m5nznwhhK0_jgMBQJzk0",
-  authDomain: "math-fest-display.firebaseapp.com",
-  databaseURL: "https://math-fest-display-default-rtdb.firebaseio.com",
-  projectId: "math-fest-display",
-  storageBucket: "math-fest-display.firebasestorage.app",
-  messagingSenderId: "252365377355",
-  appId: "1:252365377355:web:83772c179137b3de94e2ce"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
+
+// Validate that the environment variables are set.
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  throw new Error(
+    "Firebase configuration is missing. Make sure you have a .env file with VITE_FIREBASE_... variables."
+  );
+}
 
 const app = initializeApp(firebaseConfig);
 
-export const db = getFirestore(app);
-export const storage = getStorage(app);
-
-// Enable offline persistence. This allows the app to work even in environments
-// with limited network access, like the preview session you're using.
-// Changes will be saved locally and synced to the server once a connection is available.
-enableIndexedDbPersistence(db).catch((err) => {
-  if (err.code == 'failed-precondition') {
-    // Multiple tabs open, persistence can only be enabled
-    // in one tab at a time.
-    console.warn('Firestore persistence failed: Multiple tabs open.');
-  } else if (err.code == 'unimplemented') {
-    // The current browser does not support all of the
-    // features required to enable persistence
-    console.warn('Firestore persistence is not available in this browser.');
-  }
+// Initialize Firestore with the new persistence API
+// This replaces getFirestore() and enableIndexedDbPersistence()
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
 });
+
+export const storage = getStorage(app);

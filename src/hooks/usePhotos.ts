@@ -14,8 +14,8 @@ export const usePhotos = () => {
       const photosData = await getPhotos();
       setPhotos(photosData);
     } catch (err) {
-      console.error("Error fetching photos:", err);
-      setError("Failed to load photos. Please check your Firebase setup and permissions.");
+      console.error("Detailed error fetching photos:", err);
+      setError("Failed to load photos. This could be due to network issues or incorrect Firebase permissions. Check the console for more details.");
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,7 @@
+// FIX: Add 'vite/client' type reference to the main entry point to ensure
+// TypeScript is aware of Vite's environment variables throughout the app.
+/// <reference types="vite/client" />
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
