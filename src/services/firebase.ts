@@ -1,3 +1,6 @@
+// FIX: Add 'vite/client' type reference to provide types for import.meta.env.
+/// <reference types="vite/client" />
+
 import { initializeApp } from "firebase/app";
 import { 
   initializeFirestore, 
