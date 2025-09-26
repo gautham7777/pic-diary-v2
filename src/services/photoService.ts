@@ -7,6 +7,7 @@ import {
   serverTimestamp, 
   doc, 
   deleteDoc,
+  updateDoc,
   Timestamp
 } from "firebase/firestore";
 import { 
@@ -26,11 +27,12 @@ export const getPhotos = async (): Promise<Photo[]> => {
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map(doc => ({
     id: doc.id,
-    ...doc.data()
+    ...doc.data(),
+    isFavorite: doc.data().isFavorite || false, // Ensure isFavorite exists
   } as Photo));
 };
 
-export const uploadPhoto = async (file: File, description: string): Promise<void> => {
+export const uploadPhoto = async (file: File, description: string, tags: string[]): Promise<void> => {
   if (!file) {
     throw new Error("No file provided for upload.");
   }
@@ -45,9 +47,17 @@ export const uploadPhoto = async (file: File, description: string): Promise<void
   await addDoc(collection(db, PHOTOS_COLLECTION), {
     imageUrl,
     description,
+    tags,
+    isFavorite: false,
     createdAt: serverTimestamp(),
   });
 };
+
+export const updatePhotoFavoriteStatus = async (photoId: string, isFavorite: boolean): Promise<void> => {
+  const photoDocRef = doc(db, PHOTOS_COLLECTION, photoId);
+  await updateDoc(photoDocRef, { isFavorite });
+};
+
 
 export const deletePhoto = async (photo: Photo): Promise<void> => {
   if (!photo || !photo.id || !photo.imageUrl) {

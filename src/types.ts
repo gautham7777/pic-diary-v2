@@ -5,4 +5,6 @@ export interface Photo {
   imageUrl: string;
   description: string;
   createdAt: Timestamp;
+  isFavorite: boolean;
+  tags?: string[];
 }

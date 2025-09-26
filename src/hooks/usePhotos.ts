@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getPhotos, deletePhoto } from '../services/photoService';
+import { getPhotos, deletePhoto, updatePhotoFavoriteStatus } from '../services/photoService';
 import { Photo } from '../types';
 
 export const usePhotos = () => {
@@ -26,6 +26,26 @@ export const usePhotos = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const updateLocalPhoto = useCallback((photoId: string, updates: Partial<Photo>) => {
+    setPhotos(currentPhotos =>
+      currentPhotos.map(p => (p.id === photoId ? { ...p, ...updates } : p))
+    );
+  }, []);
+
+  const toggleFavorite = useCallback(async (photo: Photo) => {
+    const newFavoriteStatus = !photo.isFavorite;
+    // Update local state immediately for a responsive UI
+    updateLocalPhoto(photo.id, { isFavorite: newFavoriteStatus });
+    try {
+      await updatePhotoFavoriteStatus(photo.id, newFavoriteStatus);
+    } catch (err) {
+      console.error("Error updating favorite status:", err);
+      // Revert local state if the API call fails
+      updateLocalPhoto(photo.id, { isFavorite: photo.isFavorite });
+      alert("Failed to update favorite status. Please try again.");
+    }
+  }, [updateLocalPhoto]);
+
   const removePhoto = useCallback(async (photo: Photo) => {
     try {
       await deletePhoto(photo);
@@ -36,5 +56,5 @@ export const usePhotos = () => {
     }
   }, []);
 
-  return { photos, loading, error, refetchPhotos: fetchPhotos, removePhoto };
+  return { photos, loading, error, refetchPhotos: fetchPhotos, removePhoto, toggleFavorite };
 };
