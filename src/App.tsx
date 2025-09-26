@@ -12,7 +12,7 @@ const formatDate = (timestamp: any) => {
     }
     const date = timestamp.toDate();
     return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
+      month: 'long',
       day: 'numeric',
       year: 'numeric',
     }).format(date);
@@ -40,14 +40,14 @@ const App: React.FC = () => {
   }, [photos, searchTerm]);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-slate-100">
+    <div className="min-h-screen">
       <Header
         onAddPhotoClick={() => setIsModalOpen(true)}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
        />
 
-      <main className="container mx-auto p-4">
+      <main className="container mx-auto p-4 md:p-8">
         <PhotoGrid photos={filteredPhotos} loading={loading} error={error} onDeletePhoto={removePhoto} />
       </main>
 

@@ -17,24 +17,24 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, loading, error, onDeleteP
 
   if (error) {
     return (
-      <div className="text-center text-red-300 bg-red-900/50 border border-red-500/30 p-4 rounded-lg mt-10 max-w-2xl mx-auto">
-        <p className="font-bold text-red-200">An Error Occurred</p>
-        <p className="text-sm mt-1">{error}</p>
+      <div className="text-center text-red-800 bg-red-100 border border-red-300 p-6 rounded-xl mt-10 max-w-2xl mx-auto shadow-gentle">
+        <p className="font-bold font-serif text-xl text-red-900">Oh no, something went wrong!</p>
+        <p className="text-sm mt-2">{error}</p>
       </div>
     );
   }
 
   if (photos.length === 0) {
     return (
-      <div className="text-center text-gray-400 mt-20 bg-gray-800 p-8 rounded-xl max-w-md mx-auto border border-gray-700">
-        <h2 className="text-2xl font-medium text-gray-200">The diary is empty.</h2>
-        <p className="mt-2">Click the 'Add Photo' button to add the first memory!</p>
+      <div className="text-center text-secondary-text mt-20 bg-secondary-bg/50 p-10 rounded-xl max-w-md mx-auto border border-accent-soft/40 shadow-gentle">
+        <h2 className="text-2xl font-serif text-primary-text">Our diary is empty.</h2>
+        <p className="mt-2">Click the pink '+' button to add our first memory!</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full mx-auto columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4">
+    <div className="w-full mx-auto columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 md:gap-6">
       {photos.map((photo) => (
         <PhotoCard key={photo.id} photo={photo} onDelete={onDeletePhoto} />
       ))}
