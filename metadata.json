@@ -1,0 +1,5 @@
+{
+  "name": "Glassy Photo Diary",
+  "description": "A shared photo diary with a Pinterest-style layout and a simple, glassy aesthetic. Upload photos with descriptions and view them in a beautiful masonry grid. Powered by Firebase for real-time updates.",
+  "requestFramePermissions": []
+}
