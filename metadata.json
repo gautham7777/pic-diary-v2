@@ -1,4 +1,5 @@
 {
   "name": "Our Photo Diary",
-  "description": "A special place for our shared memories. A beautiful, Pinterest-style diary for our photos and moments together, powered by Firebase for real-time magic."
+  "description": "A special place for our shared memories. A beautiful, Pinterest-style diary for our photos and moments together, powered by Firebase for real-time magic.",
+  "requestFramePermissions": []
 }
