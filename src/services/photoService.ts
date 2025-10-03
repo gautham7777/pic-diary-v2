@@ -18,7 +18,7 @@ import {
 } from "firebase/storage";
 import { db, storage } from "./firebase";
 import { Photo, Comment } from "../types";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai"; // CORRECTED NAME
 
 const PHOTOS_COLLECTION = "photos";
 const COMMENTS_COLLECTION = "comments";
@@ -48,7 +48,7 @@ export const uploadPhoto = async (file: File, description: string, tags: string[
   
   if (process.env.GEMINI_API_KEY) {
       try {
-          const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+          const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY); // CORRECTED NAME
           const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
           const base64Data = await imageUrlToBase64(imageUrl);
           const imagePart = { inlineData: { data: base64Data, mimeType: file.type } };
