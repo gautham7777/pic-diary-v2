@@ -7,4 +7,11 @@ export interface Photo {
   createdAt: Timestamp;
   isFavorite: boolean;
   tags?: string[];
+  commentCount?: number;
+}
+
+export interface Comment {
+  text: string;
+  username: string;
+  createdAt: any;
 }
