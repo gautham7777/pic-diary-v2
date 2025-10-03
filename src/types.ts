@@ -14,4 +14,5 @@ export interface Comment {
   text: string;
   username: string;
   createdAt: any;
+  isUserComment?: boolean; // Flag to identify user's own comments
 }
