@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getComments, addComment } from '../services/photoService';
 import { Comment, Photo } from '../types';
-import { GoogleGenerativeAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import Spinner from './Spinner';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
