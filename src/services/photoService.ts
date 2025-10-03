@@ -18,7 +18,7 @@ import {
 } from "firebase/storage";
 import { db, storage } from "./firebase";
 import { Photo, Comment } from "../types";
-import { GoogleGenerativeAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 const PHOTOS_COLLECTION = "photos";
 const COMMENTS_COLLECTION = "comments";
