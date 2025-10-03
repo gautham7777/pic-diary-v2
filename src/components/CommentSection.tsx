@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getComments, addComment } from '../services/photoService';
 import { Comment, Photo } from '../types';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai"; // CORRECTED NAME
 import Spinner from './Spinner';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -40,7 +40,7 @@ const CommentSection: React.FC<{ photo: Photo }> = ({ photo }) => {
     setIsGenerating(true);
     setError(null);
     try {
-        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+        const genAI = new GoogleGenAI(GEMINI_API_KEY); // CORRECTED NAME
         const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
         const imageUrl = photo.imageUrl;
         const res = await fetch(imageUrl);
