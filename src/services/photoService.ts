@@ -18,8 +18,7 @@ import {
 } from "firebase/storage";
 import { db, storage } from "./firebase";
 import { Photo, Comment } from "../types";
-// FIX: The correct import is GoogleGenAI, not GoogleGenerativeAI.
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/genai";
 
 const PHOTOS_COLLECTION = "photos";
 const COMMENTS_COLLECTION = "comments";
@@ -47,25 +46,22 @@ export const uploadPhoto = async (file: File, description: string, tags: string[
     imageUrl, description, tags, isFavorite: false, commentCount: 0, createdAt: serverTimestamp(),
   });
   
-  // --- NEW: Automatically generate an AI comment after upload ---
-  // FIX: Use process.env.API_KEY as per the guidelines, which resolves the 'env' property error.
-  if (process.env.API_KEY) {
+  if (process.env.GEMINI_API_KEY) {
       try {
-          // FIX: The correct class is GoogleGenAI.
-          const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+          const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+          const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
           const base64Data = await imageUrlToBase64(imageUrl);
           const imagePart = { inlineData: { data: base64Data, mimeType: file.type } };
           const prompt = "You are a friendly and enthusiastic social media user. Look at this photo and write a short, positive, and complimentary comment, like you would on Instagram. Keep it under 15 words and include an emoji. For example: 'Wow, what a beautiful shot! 😍' or 'This looks like so much fun! ❤️'.";
-          const textPart = { text: prompt };
-
-          const response = await ai.models.generateContent({
-              model: 'gemini-2.5-flash',
-              contents: { parts: [textPart, imagePart] }
-          });
-          const aiCommentText = response.text;
+          
+          const result = await model.generateContent([prompt, imagePart]);
+          const response = await result.response;
+          const aiCommentText = response.text();
           const fakeUsername = fakeUsernames[Math.floor(Math.random() * fakeUsernames.length)];
           
-          await addComment(newPhotoDoc.id, aiCommentText, fakeUsername, false);
+          if (aiCommentText) {
+            await addComment(newPhotoDoc.id, aiCommentText, fakeUsername, false);
+          }
       } catch (err) {
           console.error("Failed to generate automatic AI comment:", err);
       }
@@ -77,11 +73,10 @@ export const getComments = async (photoId: string): Promise<Comment[]> => {
     const q = query(commentsRef, orderBy("createdAt", "asc"));
     const querySnapshot = await getDocs(q);
     const comments = querySnapshot.docs.map(doc => doc.data() as Comment);
-    // Custom sort to always show user's comment first if it exists
     return comments.sort((a, b) => {
         if (a.isUserComment && !b.isUserComment) return -1;
         if (!a.isUserComment && b.isUserComment) return 1;
-        return 0; // Keep original order for same-type comments
+        return 0;
     });
 };
 
